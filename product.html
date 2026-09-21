@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feygrace Stock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --surface:#151210;
+    --line:#2c2620;
+    --orange:#ff7a1a;
+    --text:#f5f0e8;
+    --muted:#8a8578;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--orange);outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
+
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px clamp(20px,5vw,64px);border-bottom:1px solid var(--line);
+  }
+  .brand{font-size:15px;font-weight:600;letter-spacing:0.02em;}
+  .brand span{color:var(--orange);}
+  .topbar-right{font-size:13px;color:var(--muted);text-transform:capitalize;}
+
+  .state-screen{
+    min-height:70vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;padding:40px 20px;text-align:center;
+  }
+  .state-screen p{color:var(--muted);font-size:14px;max-width:40ch;}
+  .spinner{
+    width:22px;height:22px;border:2px solid var(--line);
+    border-top-color:var(--orange);border-radius:50%;
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .hero{display:grid;grid-template-columns:1.1fr 1fr;min-height:88vh;border-bottom:1px solid var(--line);}
+  .hero-media{position:relative;overflow:hidden;background:#000;border-right:1px solid var(--line);}
+  .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:0.94;}
+  .hero-media::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.35) 100%);
+    pointer-events:none;
+  }
+  .format-tag{
+    position:absolute;bottom:24px;left:24px;background:rgba(10,10,10,0.72);
+    border:1px solid rgba(255,122,26,0.4);color:var(--text);font-size:12px;
+    letter-spacing:0.03em;padding:7px 12px;backdrop-filter:blur(4px);
+  }
+  .hero-copy{padding:clamp(32px,5vw,72px) clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center;}
+  .category-line{font-size:13px;color:var(--muted);margin-bottom:18px;text-transform:capitalize;}
+  .category-line a{color:var(--orange);}
+  .hero-copy h1{font-size:clamp(28px,3.4vw,44px);font-weight:600;line-height:1.15;letter-spacing:-0.01em;margin-bottom:18px;}
+  .hero-copy p.lede{color:var(--muted);font-size:16px;max-width:46ch;margin-bottom:32px;}
+
+  .buy-block{border:1px solid var(--line);background:var(--surface);padding:26px;max-width:420px;}
+  .price-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;}
+  .price{font-size:38px;font-weight:700;font-family:'Space Grotesk',sans-serif;}
+  .price-note{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.4;}
+  .spec-list{list-style:none;font-size:13.5px;color:var(--muted);margin-bottom:24px;border-top:1px solid var(--line);padding-top:16px;}
+  .spec-list li{display:flex;justify-content:space-between;padding:6px 0;}
+  .spec-list li span:last-child{color:var(--text);text-transform:capitalize;}
+  .buy-btn{
+    display:block;width:100%;text-align:center;background:var(--orange);
+    color:#0a0a0a;font-weight:600;font-size:15.5px;padding:15px;border:none;
+    cursor:pointer;transition:background 0.15s ease;
+  }
+  .buy-btn:hover{background:#ff8c3d;}
+  .buy-btn.free{background:var(--text);}
+  .buy-btn.free:hover{background:#fff;}
+  .secure-line{text-align:center;font-size:12px;color:var(--muted);margin-top:12px;}
+  .secure-line strong{color:var(--text);font-weight:500;}
+
+  .strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);}
+  .strip-item{flex:1;min-width:220px;padding:22px clamp(20px,4vw,40px);border-right:1px solid var(--line);}
+  .strip-item:last-child{border-right:none;}
+  .strip-item h3{font-size:14px;font-weight:600;color:var(--orange);margin-bottom:6px;}
+  .strip-item p{font-size:13.5px;color:var(--muted);}
+
+  .collection{padding:clamp(48px,6vw,80px) clamp(20px,5vw,64px);}
+  .collection-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    margin-bottom:28px;border-bottom:1px solid var(--line);padding-bottom:20px;
+  }
+  .collection-head h2{font-size:24px;font-weight:600;}
+  .collection-head span{font-size:13.5px;color:var(--muted);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:1px;background:var(--line);border:1px solid var(--line);}
+  .card{background:var(--bg);display:flex;flex-direction:column;cursor:pointer;}
+  .card-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:#000;}
+  .card-media img{width:100%;height:100%;object-fit:cover;filter:grayscale(0.15);transition:transform 0.35s ease, filter 0.35s ease;}
+  .card:hover .card-media img{transform:scale(1.045);filter:grayscale(0);}
+  .card-watermark{
+    position:absolute;bottom:10px;right:10px;font-size:10.5px;letter-spacing:0.04em;
+    color:rgba(245,240,232,0.75);background:rgba(0,0,0,0.55);padding:4px 8px;
+  }
+  .card-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1;}
+  .card-body h3{font-size:14.5px;font-weight:500;line-height:1.35;}
+  .card-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;}
+  .card-price{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;}
+  .card-link{font-size:12.5px;color:var(--orange);border-bottom:1px solid transparent;}
+  .card:hover .card-link{border-bottom-color:var(--orange);}
+
+  footer{
+    border-top:1px solid var(--line);padding:28px clamp(20px,5vw,64px);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    font-size:12.5px;color:var(--muted);
+  }
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;min-height:auto;}
+    .hero-media{aspect-ratio:4/3;border-right:none;border-bottom:1px solid var(--line);}
+    .strip-item{flex:1 1 100%;border-right:none;border-bottom:1px solid var(--line);}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">FEY<span>GRACE</span> STOCK</div>
+    <div class="topbar-right" id="topbarCategory">&nbsp;</div>
+  </div>
+
+  <div id="app">
+    <div class="state-screen">
+      <div class="spinner"></div>
+      <p>Loading catalog…</p>
+    </div>
+  </div>
+
+  <footer>
+    <div>© Feygrace Stock — Digital Asset Studio</div>
+    <div>Licensing questions: feygracestockimages@gmail.com</div>
+  </footer>
+
+<script>
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdzp1q8QkhrOGKPCmk8vO74ClEG1VGKFaIuU9Z_qu_pI-4ogbM5TJuiPxW7FF_Xen2hWpM1eUUNaG8/pub?gid=510014079&single=true&output=csv";
+
+  const app = document.getElementById('app');
+  const topbarCategory = document.getElementById('topbarCategory');
+
+  function parseCSV(text){
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for(let i=0;i<text.length;i++){
+      const c = text[i], next = text[i+1];
+      if(inQuotes){
+        if(c === '"' && next === '"'){ field += '"'; i++; }
+        else if(c === '"'){ inQuotes = false; }
+        else { field += c; }
+      } else {
+        if(c === '"'){ inQuotes = true; }
+        else if(c === ','){ row.push(field); field=''; }
+        else if(c === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+        else if(c === '\r'){ /* skip */ }
+        else { field += c; }
+      }
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    const headers = rows.shift().map(h => h.trim());
+    return rows.filter(r => r.length > 1 || r[0]).map(r => {
+      const obj = {};
+      headers.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
+      return obj;
+    });
+  }
+
+  function money(price){
+    const n = Number(price);
+    if(!n) return 'Free';
+    return '$' + n.toLocaleString('en-US');
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function renderError(message){
+    app.innerHTML = `
+      <div class="state-screen">
+        <h2 style="font-size:20px;">Couldn't load this product</h2>
+        <p>${escapeHtml(message)}</p>
+      </div>`;
+  }
+
+  function render(item, related){
+    const isFree = !Number(item.price);
+    topbarCategory.textContent = item.category || '';
+
+    const buyBlock = isFree
+      ? `<button class="buy-btn free" id="buyBtn">Download for free</button>
+         <div class="secure-line">Delivered instantly via email</div>`
+      : `<button class="buy-btn" id="buyBtn">Buy this image — ${money(item.price)}</button>
+         <div class="secure-line">Paid securely with <strong>Paystack</strong></div>`;
+
+    app.innerHTML = `
+      <section class="hero">
+        <div class="hero-media">
+          <img src="${escapeHtml(item.thumbnail_url)}" alt="${escapeHtml(item.title)}">
+          <div class="format-tag">High-resolution · JPG</div>
+        </div>
+        <div class="hero-copy">
+          <div class="category-line">${escapeHtml(item.category)} / <a href="#collection">view collection</a></div>
+          <h1>${escapeHtml(item.title)}</h1>
+          <p class="lede">${escapeHtml((item.tags || '').split(',').join(' · '))}</p>
+          <div class="buy-block">
+            <div class="price-row">
+              <div class="price">${money(item.price)}</div>
+              <div class="price-note">Standard license<br>Single download</div>
+            </div>
+            <ul class="spec-list">
+              <li><span>Category</span><span>${escapeHtml(item.category)}</span></li>
+              <li><span>Usage</span><span>Commercial, unlimited</span></li>
+              <li><span>Delivery</span><span>Instant download link</span></li>
+            </ul>
+            ${buyBlock}
+          </div>
+        </div>
+      </section>
+
+      <div class="strip">
+        <div class="strip-item"><h3>No subscription</h3><p>Pay once, own the file. No recurring charges, no expiring credits.</p></div>
+        <div class="strip-item"><h3>Instant delivery</h3><p>Unwatermarked file lands via secure download link the moment payment clears.</p></div>
+        <div class="strip-item"><h3>Full commercial rights</h3><p>Use across ads, web, print, and product with no attribution required.</p></div>
+      </div>
+
+      <section class="collection" id="collection">
+        <div class="collection-head">
+          <h2>More in ${escapeHtml(item.category)}</h2>
+          <span>${related.length} image${related.length === 1 ? '' : 's'}</span>
+        </div>
+        <div class="grid" id="relatedGrid"></div>
+      </section>
+    `;
+
+    const grid = document.getElementById('relatedGrid');
+    if(related.length === 0){
+      grid.innerHTML = `<div class="card"><div class="card-body"><p style="color:var(--muted);font-size:13.5px;">No other images in this category yet.</p></div></div>`;
+    } else {
+      related.forEach(r => {
+        const card = document.createElement('a');
+        card.className = 'card';
+        card.href = `?id=${encodeURIComponent(r.id)}`;
+        card.innerHTML = `
+          <div class="card-media">
+            <img src="${escapeHtml(r.thumbnail_url)}" alt="${escapeHtml(r.title)}">
+            ${r.watermarked === 'yes' ? '<div class="card-watermark">FEYGRACE</div>' : ''}
+          </div>
+          <div class="card-body">
+            <h3>${escapeHtml(r.title)}</h3>
+            <div class="card-foot">
+              <div class="card-price">${money(r.price)}</div>
+              <div class="card-link">View image</div>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    document.getElementById('buyBtn').addEventListener('click', () => {
+      if(isFree){
+        alert('This will trigger an instant email download once delivery is fully connected. (r2_key: ' + item.r2_key + ')');
+      } else {
+        if(item.paystack_link && !item.paystack_link.includes('REPLACE_ME')) {
+          window.open(item.paystack_link, '_blank');
+        } else {
+          alert('Payment link not set up yet for this image.');
+        }
+      }
+    });
+  }
+
+  async function init(){
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    try {
+      const res = await fetch(CSV_URL);
+      if(!res.ok) throw new Error('Catalog fetch failed (' + res.status + ')');
+      const text = await res.text();
+      const rows = parseCSV(text);
+
+      if(!id){
+        renderError('No product specified. Link to this page with ?id=your-image-id.');
+        return;
+      }
+      const item = rows.find(r => r.id === id);
+      if(!item){
+        renderError(`No product found with id "${id}".`);
+        return;
+      }
+      const related = rows.filter(r => r.category === item.category && r.id !== item.id);
+      render(item, related);
+    } catch(err){
+      renderError('There was a problem loading the catalog. Please try again shortly.');
+      console.error(err);
+    }
+  }
+
+  init();
+</script>
+</body>
+  </html>
