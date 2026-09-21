@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Conversation — Feygrace Stock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --surface:#151210;
+    --surface-2:#1c1815;
+    --line:#2c2620;
+    --orange:#ff7a1a;
+    --orange-dim:#c85f12;
+    --text:#f5f0e8;
+    --muted:#8a8578;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--orange);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:22px clamp(20px,5vw,64px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  .brand span{color:var(--orange);}
+  .topbar-right{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .hero{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    min-height:88vh;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-media{
+    position:relative;
+    overflow:hidden;
+    background:#000;
+    border-right:1px solid var(--line);
+  }
+  .hero-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 30%;
+    opacity:0.94;
+  }
+  .hero-media::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.35) 100%);
+    pointer-events:none;
+  }
+  .format-tag{
+    position:absolute;
+    bottom:24px;
+    left:24px;
+    background:rgba(10,10,10,0.72);
+    border:1px solid rgba(255,122,26,0.4);
+    color:var(--text);
+    font-size:12px;
+    letter-spacing:0.03em;
+    padding:7px 12px;
+    backdrop-filter:blur(4px);
+  }
+
+  .hero-copy{
+    padding:clamp(32px,5vw,72px) clamp(28px,4vw,64px);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .category-line{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:18px;
+  }
+  .category-line a{color:var(--orange);}
+  .hero-copy h1{
+    font-size:clamp(30px,3.4vw,44px);
+    font-weight:600;
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    margin-bottom:18px;
+  }
+  .hero-copy p.lede{
+    color:var(--muted);
+    font-size:16px;
+    max-width:46ch;
+    margin-bottom:32px;
+  }
+
+  .buy-block{
+    border:1px solid var(--line);
+    background:var(--surface);
+    padding:26px;
+    max-width:420px;
+  }
+  .price-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:20px;
+  }
+  .price{
+    font-size:38px;
+    font-weight:700;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .price-note{
+    font-size:12.5px;
+    color:var(--muted);
+    text-align:right;
+    line-height:1.4;
+  }
+  .spec-list{
+    list-style:none;
+    font-size:13.5px;
+    color:var(--muted);
+    margin-bottom:24px;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+  .spec-list li{
+    display:flex;
+    justify-content:space-between;
+    padding:6px 0;
+  }
+  .spec-list li span:last-child{color:var(--text);}
+
+  .buy-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    background:var(--orange);
+    color:#0a0a0a;
+    font-weight:600;
+    font-size:15.5px;
+    padding:15px;
+    border:none;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .buy-btn:hover{background:#ff8c3d;}
+  .secure-line{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:12px;
+  }
+  .secure-line strong{color:var(--text);font-weight:500;}
+
+  .strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    border-bottom:1px solid var(--line);
+  }
+  .strip-item{
+    flex:1;
+    min-width:220px;
+    padding:22px clamp(20px,4vw,40px);
+    border-right:1px solid var(--line);
+  }
+  .strip-item:last-child{border-right:none;}
+  .strip-item h3{
+    font-size:14px;
+    font-weight:600;
+    color:var(--orange);
+    margin-bottom:6px;
+  }
+  .strip-item p{
+    font-size:13.5px;
+    color:var(--muted);
+  }
+
+  .collection{
+    padding:clamp(48px,6vw,80px) clamp(20px,5vw,64px);
+  }
+  .collection-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:28px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:20px;
+  }
+  .collection-head h2{
+    font-size:24px;
+    font-weight:600;
+  }
+  .collection-head a{
+    font-size:13.5px;
+    color:var(--orange);
+    white-space:nowrap;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .card{
+    background:var(--bg);
+    display:flex;
+    flex-direction:column;
+  }
+  .card-media{
+    position:relative;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    background:#000;
+  }
+  .card-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:grayscale(0.15);
+    transition:transform 0.35s ease, filter 0.35s ease;
+  }
+  .card:hover .card-media img{
+    transform:scale(1.045);
+    filter:grayscale(0);
+  }
+  .card-watermark{
+    position:absolute;
+    bottom:10px;
+    right:10px;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    color:rgba(245,240,232,0.75);
+    background:rgba(0,0,0,0.55);
+    padding:4px 8px;
+  }
+  .card-body{
+    padding:16px 18px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+  }
+  .card-body h3{
+    font-size:14.5px;
+    font-weight:500;
+    line-height:1.35;
+  }
+  .card-foot{
+    margin-top:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .card-price{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:15px;
+  }
+  .card-link{
+    font-size:12.5px;
+    color:var(--orange);
+    border-bottom:1px solid transparent;
+  }
+  .card:hover .card-link{border-bottom-color:var(--orange);}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px clamp(20px,5vw,64px);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;min-height:auto;}
+    .hero-media{aspect-ratio:4/3;border-right:none;border-bottom:1px solid var(--line);}
+    .strip-item{flex:1 1 100%;border-right:none;border-bottom:1px solid var(--line);}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">FEY<span>GRACE</span> STOCK</div>
+    <div class="topbar-right">Education Collection</div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-media">
+      <img src="hero.webp" alt="Three university students laughing together during a conversation in a bright campus atrium, laptops in hand">
+      <div class="format-tag">6720 × 4480px · RAW + JPG</div>
+    </div>
+
+    <div class="hero-copy">
+      <div class="category-line">Education &amp; Campus Life / <a href="#">view category</a></div>
+      <h1>Campus Conversation</h1>
+      <p class="lede">Three students mid-laugh in a university atrium — natural light, unposed energy, laptops present but not the focus. Built for admissions pages, ed-tech campaigns, and anything that needs to feel like real student life.</p>
+
+      <div class="buy-block">
+        <div class="price-row">
+          <div class="price">$18</div>
+          <div class="price-note">Standard license<br>Single download</div>
+        </div>
+        <ul class="spec-list">
+          <li><span>Resolution</span><span>6720 × 4480px</span></li>
+          <li><span>Formats</span><span>RAW, JPG</span></li>
+          <li><span>Usage</span><span>Commercial, unlimited</span></li>
+          <li><span>Delivery</span><span>Instant download link</span></li>
+        </ul>
+        <button class="buy-btn">Buy this image — $18</button>
+        <div class="secure-line">Paid securely with <strong>Paystack</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="strip-item">
+      <h3>No subscription</h3>
+      <p>Pay once, own the file. No recurring charges, no expiring credits.</p>
+    </div>
+    <div class="strip-item">
+      <h3>Instant delivery</h3>
+      <p>Unwatermarked file lands via secure download link the moment payment clears.</p>
+    </div>
+    <div class="strip-item">
+      <h3>Full commercial rights</h3>
+      <p>Use across ads, web, print, and product with no attribution required.</p>
+    </div>
+  </div>
+
+  <section class="collection">
+    <div class="collection-head">
+      <h2>More from this collection</h2>
+      <a href="#">Browse all Education images →</a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000&auto=format&fit=crop" alt="Students studying together at a library table with open laptops and notebooks">
+          <div class="card-watermark">FEYGRACE</div>
+        </div>
+        <div class="card-body">
+          <h3>Library Study Session</h3>
+          <div class="card-foot">
+            <div class="card-price">$14</div>
+            <div class="card-link">View image</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1000&auto=format&fit=crop" alt="Graduate in cap and gown smiling on a university lawn">
+          <div class="card-watermark">FEYGRACE</div>
+        </div>
+        <div class="card-body">
+          <h3>Graduation Day Portrait</h3>
+          <div class="card-foot">
+            <div class="card-price">$16</div>
+            <div class="card-link">View image</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1544531585-9847b68c8c86?q=80&w=1000&auto=format&fit=crop" alt="Lecture hall filled with students taking notes during a class">
+          <div class="card-watermark">FEYGRACE</div>
+        </div>
+        <div class="card-body">
+          <h3>Lecture Hall, Morning Session</h3>
+          <div class="card-foot">
+            <div class="card-price">$18</div>
+            <div class="card-link">View image</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1000&auto=format&fit=crop" alt="Group of students walking together across a university campus courtyard">
+          <div class="card-watermark">FEYGRACE</div>
+        </div>
+        <div class="card-body">
+          <h3>Courtyard Walk, Golden Hour</h3>
+          <div class="card-foot">
+            <div class="card-price">$15</div>
+            <div class="card-link">View image</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© Feygrace Stock — Digital Asset Studio</div>
+    <div>Licensing questions: feygracestockimages@gmail.com</div>
+  </footer>
+
+</body>
+  </html>
