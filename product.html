@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,8 +53,8 @@
   @keyframes spin{to{transform:rotate(360deg);}}
 
   .hero{display:grid;grid-template-columns:1.1fr 1fr;min-height:88vh;border-bottom:1px solid var(--line);}
-  .hero-media{position:relative;overflow:hidden;background:#000;border-right:1px solid var(--line);height:88vh;}
-  .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:0.94;display:block;}
+  .hero-media{position:relative;overflow:hidden;background:#000;border-right:1px solid var(--line);height:88vh;aspect-ratio:4/3;}
+  .hero-media img{width:100%;height:100%;object-fit:contain;object-position:center;opacity:0.94;display:block;}
   .hero-media::after{
     content:"";position:absolute;inset:0;
     background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.35) 100%);
@@ -320,3 +321,4 @@
 </script>
 </body>
 </html>
+```
