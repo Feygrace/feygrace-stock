@@ -103,39 +103,3 @@ function parseCSV(text) {
       headers.forEach((h, idx) => (obj[h] = (r[idx] || '').trim()));
       return obj;
     });
-}
-Create it at path: netlify/functions/free-download.js
-2. Update product.html — find this exact block near the bottom of the <script> section:
-Find:
-document.getElementById('buyBtn').addEventListener('click', () => {
-      // NOTE: r2_key alone can't deliver a file yet — it's just a path inside
-      // your private R2 bucket, not a public link. Real delivery for both the
-      // free and paid paths will happen once the Netlify Function + R2 signed
-      // URL piece is wired in. Until then this is a placeholder so the button
-      // doesn't silently do nothing.
-      if(isFree){
-        alert('This will trigger an instant download once delivery is connected. (r2_key: ' + item.r2_key + ')');
-      } else {
-Replace with:
-document.getElementById('buyBtn').addEventListener('click', async () => {
-      if(isFree){
-        const btn = document.getElementById('buyBtn');
-        const originalText = btn.textContent;
-        btn.textContent = 'Preparing your download…';
-        btn.disabled = true;
-        try {
-          const res = await fetch(`/.netlify/functions/free-download?id=${encodeURIComponent(item.id)}`);
-          const data = await res.json();
-          if(res.ok && data.url){
-            window.open(data.url, '_blank');
-          } else {
-            alert(data.error || 'Could not prepare this download. Please try again.');
-          }
-        } catch(err){
-          alert('Something went wrong preparing your download. Please try again.');
-          console.error(err);
-        } finally {
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }
-      } else {
