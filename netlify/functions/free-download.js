@@ -60,9 +60,17 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: JSON.stringify({ error: 'No file associated with this product' }) };
     }
 
+    const extension = (product.r2_key.split('.').pop() || 'jpg').toLowerCase();
+    const safeTitle = (product.title || product.r2_key)
+      .replace(/[^a-z0-9]+/gi, '-')
+      .replace(/^-+|-+$/g, '')
+      .toLowerCase();
+    const downloadFilename = `${safeTitle || 'feygrace-image'}.${extension}`;
+
     const command = new GetObjectCommand({
       Bucket: R2_BUCKET_NAME,
       Key: product.r2_key,
+      ResponseContentDisposition: `attachment; filename="${downloadFilename}"`,
     });
     const signedUrl = await getSignedUrl(r2, command, { expiresIn: LINK_EXPIRY_SECONDS });
 
