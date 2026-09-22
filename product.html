@@ -276,17 +276,35 @@
       });
     }
 
-    document.getElementById('buyBtn').addEventListener('click', () => {
-      if(isFree){
-        alert('This will trigger an instant email download once delivery is fully connected. (r2_key: ' + item.r2_key + ')');
+    document.getElementById('buyBtn').addEventListener('click', async () => {
+  if(isFree){
+    const btn = document.getElementById('buyBtn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Preparing your download…';
+    btn.disabled = true;
+    try {
+      const res = await fetch(`/.netlify/functions/free-download?id=${encodeURIComponent(item.id)}`);
+      const data = await res.json();
+      if(res.ok && data.url){
+        window.open(data.url, '_blank');
       } else {
-        if(item.paystack_link && !item.paystack_link.includes('REPLACE_ME')) {
-          window.open(item.paystack_link, '_blank');
-        } else {
-          alert('Payment link not set up yet for this image.');
-        }
+        alert(data.error || 'Could not prepare this download. Please try again.');
       }
-    });
+    } catch(err){
+      alert('Something went wrong preparing your download. Please try again.');
+      console.error(err);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  } else {
+    if(item.paystack_link && !item.paystack_link.includes('REPLACE_ME')) {
+      window.open(item.paystack_link, '_blank');
+    } else {
+      alert('Payment link not set up yet for this image.');
+    }
+  }
+});
   }
 
   async function init(){
