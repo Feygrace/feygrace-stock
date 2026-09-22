@@ -16,7 +16,7 @@ const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
 const R2_ENDPOINT = process.env.R2_ENDPOINT;
 const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME;
 
-const LINK_EXPIRY_SECONDS = 60 * 60; // 1 hour
+const LINK_EXPIRY_SECONDS = 60 * 60;
 
 const CSV_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSdzp1q8QkhrOGKPCmk8vO74ClEG1VGKFaIuU9Z_qu_pI-4ogbM5TJuiPxW7FF_Xen2hWpM1eUUNaG8/pub?gid=510014079&single=true&output=csv';
@@ -103,3 +103,4 @@ function parseCSV(text) {
       headers.forEach((h, idx) => (obj[h] = (r[idx] || '').trim()));
       return obj;
     });
+}
